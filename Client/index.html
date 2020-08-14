@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Testando a minha API rest</h1>
+
+    <input type="number" name="id" placeholder="id" value="">
+    <input type="text" name="title" placeholder="titulo" value="">
+    <input type="number" name="price" placeholder="preço">
+    <input type="number" name="year" placeholder="ano">
+    <button onClick="CarregandoDados()" >Clique aqui</button>
+    <h3>Jogos</h3>
+    <div class="lista">        
+    </div>
+
+    <script>
+    
+        const texto = document.querySelector("h1")
+        texto.addEventListener("click", baixando)
+         var data;
+        async function baixando(){
+           const dados = await fetch("http://localhost:8001/games")
+            const data = await dados.json()      
+                     
+            const game = data.map((item)=>{
+                return `
+                <div>
+                    <p>O nome é ${item.title}<p>
+                    <p>Do ano de ${item.year}<p>
+                    <p>Preço: ${item.price}<p>
+                </div>                  
+                `                
+            })
+        document.querySelector(".lista").innerHTML = game
+        }
+
+
+        var input = document.querySelectorAll("input")
+
+        function CarregandoDados(){
+            let jogo ={
+             id: input[0].value,
+             title: input[1].value,
+              price: input[2].value,
+              year:input[3].value
+            }
+            mandandoDados(jogo)
+        }
+        
+        async function mandandoDados(jogo){           
+            console.log(jogo)
+          await fetch('http://localhost:8001/game',{
+                method: 'post',
+                headers:{
+                 "Content-Type": "application/json; charset=utf-8"
+                },
+                body: JSON.stringify(jogo)
+            })
+         
+           
+        }
+
+    
+
+
+
+
+    </script>
+</body>
+</html>
