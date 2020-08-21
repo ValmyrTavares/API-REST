@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Outro Index</title>
+  </head>
+  <body>
+    <h1>Filme</h1>
+    <input type="text" name="title" id="title" placeholder="Titulo" />
+    <input type="text" name="body" id="body" placeholder="descrição" />
+    <input type="number" name="year" id="year" placeholder="Ano" />
+    <input type="number" name="price" id="price" placeholder="Preço" />
+    <button onclick="createFilm()">Criar</button>
+    <hr />
+    <div id="container"></div>
+  </body>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function createFilm() {
+      var titleFilms = document.querySelector("#title");
+      var bodyFilms = document.querySelector("#body");
+      var yearFilms = document.querySelector("#year");
+      var priceFilms = document.querySelector("#price");
+
+      var movie = {
+        title: titleFilms.value,
+        body: bodyFilms.value,
+        year: yearFilms.value,
+        price: priceFilms.value,
+      };
+      axios.post("http://localhost:8001/game", movie).then((response)=>{
+        if(response.status ==200)
+        alert("Filme cadastrado")
+      }).catch((err)=>{
+          console.log(err)
+      })
+    }
+
+    function baixando() {
+      axios.get("http://localhost:8001/games").then((response) => {
+        const filmes = response.data;
+        console.log(filmes);
+
+        const res2 = filmes.map((filme) => {
+          let res = `
+            <ul>
+                    <li>${filme.title}</li>
+                    <li>${filme.body}</li>
+                    <li>${filme.year}</li>
+                    <li>${filme.price}</li>
+                </ul>                `;
+          return res;
+        });
+        document.querySelector("#container").innerHTML = res2;
+      });
+    }
+
+    baixando();
+  </script>
+</html>

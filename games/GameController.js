@@ -38,4 +38,14 @@ router.delete('/game/:id',(req, res)=>{
     res.sendStatus(200)
    })
 })
+
+router.put("/game/:id",(req, res)=>{
+    var id = req.params.id;
+
+    Game.update({
+        where:{
+            id:id
+        }
+    })
+})
 module.exports = router;
