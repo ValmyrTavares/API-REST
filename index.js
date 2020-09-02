@@ -111,7 +111,7 @@ app.use(bodyParser.json());
 
 
 app.listen(8001, () => {
-  console.log("api rodando");
+  console.log("api rodando na porta 8001");
 });
 
 

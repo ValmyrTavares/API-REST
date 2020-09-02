@@ -6,7 +6,9 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>Testando a minha API rest</h1>
+
+    <h1>Testando a minha API rest de novo</h1>
+    <h1>Criando uma postagem</h1>
 
     <input type="text" name="title" placeholder="Titulo" value="" />
     <input type="text" name="body" placeholder="descrição" value="" />
@@ -14,6 +16,12 @@
     <input type="number" name="price" placeholder="Preço" />
     <button onClick="CarregandoDados()">Clique aqui</button>
     <h3>Jogos</h3>
+
+    <h2>Editando postagem</h2>
+    <div class="edit"></div>
+    <hr>
+    
+
     <div class="lista"></div>
 
     <script>
@@ -39,21 +47,65 @@
         document.querySelector(".lista").innerHTML = game;
       }
 
-      async function eraser (id, title){         
+      async function eraser (id,){         
        await fetch(`http://localhost:8001/game/${id}`,
         { method:'DELETE' })
         baixando()
       }
 
-      async function edit (id, titulo, corpo, ano, preco){  
-        console.log(id)            
-           
+      async function edit (id){  
+        const dados = await fetch(`http://localhost:8001/game/${id}`);           
+        const data = await dados.json();
+        const teste = `
+        <form submit='carregandoEdit'>
+           <input type='text' id='title' value="${data.title}"/>
+           <input type='text' id='body' value="${data.body}"/>
+           <input type='number' id='year' value="${data.year}"/>
+           <input type='number' id='price' value="${data.price}"/>
+           <input type='hidden' id="valor" value="${data.id}"/>
+          <input  type="submit" value="EDITAR"/>
+        </form>
+       
+        `
+        document.querySelector(".edit").innerHTML = teste  
+        
+       
       }
+     const botaoFormulario =  document.querySelector(".edit").addEventListener("submit",carregandoEdit)
+
+      function carregandoEdit(){
+        
+       let editData={
+          title: title.value,
+          body: body.value,
+          year: year.value,
+          price:price.value
+        }
+        // console.log(valor.value)          
+        editandoDados(editData, valor.value)
+      }
+
+      async function editandoDados(editData,id){
+          console.log(editData)
+          console.log(id)
+          
+
+          await (fetch(`http://localhost:8001/game/${id}`), {
+              method: "PUT",
+              headers: {
+               " Content-Type": 'application/json;  charset=utf-8"',
+              },
+              body: JSON.stringify(editData)
+             
+            })
+           
+        }
      
       var input = document.querySelectorAll("input");
 
       function CarregandoDados() {
         let jogo = {
+
           title: input[0].value,
           body: input[1].value,
           year: input[2].value,

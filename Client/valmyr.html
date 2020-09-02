@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h2>Editar Game</h2>
+    <h2>Criar um novo game</h2>
+    <input type="text" id="EditTitle" name="title" placeholder="Titulo"/><br>
+    <input type="text" id="EditBody" name="body" placeholder="Corpo"/><br>
+    <input type="number" id="EditYear" name="year" placeholder="Ano"/><br>
+    <input type="number" id="EditPrice" name="price" placeholder="Preço"/><br>
+    <input type="hidden" id="EditId" name="price" placeholder="Preço"/><br>
+    <button onClick="editGame()" type="button">EDITAR</button>
+    <hr>
+  
+
+    <h2>Criar um novo game</h2>
+    <input type="text" id="title" name="title" placeholder="Titulo"/><br>
+    <input type="text" id="body" name="body" placeholder="Corpo"/><br>
+    <input type="number" id="year" name="year" placeholder="Ano"/><br>
+    <input type="number" id="price" name="price" placeholder="Preço"/><br>
+    <button onClick="createGame()" type="button">Criar</button>
+
+    <hr>
+
+    <h2>Lista de games</h2>   
+    <ul id="games"> </ul>
+    
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+   
+    
+    axios.get("http://localhost:8001/games").then(response =>{
+        var games = response.data;
+        var list = document.getElementById("games")
+        
+
+        games.forEach(item => {
+        var li = document.createElement("li")
+            li.innerHTML = item.title + "  " + item.body + "  " + item.price + "  " + item.year;
+            list.appendChild(li)
+             const btn = document.createElement("button")
+             btn.innerText = "DELETE"
+             list.appendChild(btn)
+             btn.addEventListener('click', ()=>{
+                deletarGame(item)
+             })           
+            const btnEdit = document.createElement("button")
+             btnEdit.innerText = 'EDIT'
+             list.appendChild(btnEdit)
+             btnEdit.addEventListener('click',()=>{
+                carregandoDadosParaSerEditado(item)
+             })
+        })
+
+    }).catch(error =>{
+        console.log(error)
+    })
+
+    function carregandoDadosParaSerEditado(item){
+        console.log(item)
+        document.getElementById("EditTitle").value = item.title
+        document.getElementById("EditBody").value = item.body
+        document.getElementById("EditYear").value = item.year
+        document.getElementById("EditPrice").value = item.price
+        document.getElementById("EditId").value = item.id
+    }
+
+    function editGame(){
+        
+        gameEditado ={
+            title: document.getElementById("EditTitle").value, 
+            body: document.getElementById("EditBody").value, 
+            year:  document.getElementById("EditYear").value, 
+            price: document.getElementById("EditPrice").value 
+        }
+        const id = document.getElementById("EditId").value
+        console.log(gameEditado)
+        console.log(id)
+        
+        axios.put(`http://localhost:8001/game/${id}`,gameEditado)
+        .then(response =>{
+            if(response.status== 200)
+            alert("Seu game foi editado com sucesso")
+        }).catch(err => {
+            alert("Deu ruim")
+        })
+
+    }
+
+    function deletarGame(item){
+        
+        axios.delete(`http://localhost:8001/game/${item.id}`)
+        .then(response =>{
+            if(response.status== 200)
+            alert("Seu game foi apagado com sucesso")
+        }).catch(err => {
+            alert("Deu ruim")
+        })
+    }
+
+    function createGame(){
+        debugger
+        var game = {
+        title: document.getElementById('title').value,
+        body: document.getElementById('body').value,
+        year: document.getElementById('year').value,
+        price: document.getElementById('price').value}
+    console.log(game)
+         axios.post("http://localhost:8001/game",game)
+         .then(response => {             
+             if(response.status == 200)
+             alert("Game cadastrado com sucesso")
+         }).catch(err =>{
+             console.log(err)
+         })
+    }
+</script>
+</html>
